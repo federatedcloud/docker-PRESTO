@@ -54,18 +54,10 @@ RUN apt-get update -y && apt-get install -y \
 #    libeigen2-dev \ 
 
 # set up user
-RUN useradd -mr -G sudo dev 
-RUN passwd -d dev
-RUN echo "dev  ALL=(ALL)       NOPASSWD: ALL"  >> /etc/sudoers
-RUN chown -R dev /home/dev
-
-WORKDIR /home/dev
 
 RUN mkdir /opt/pulsar
-RUN chown -R dev /opt/pulsar
-ENV PATH=$PATH:/home/dev/.local/bin
-
-USER dev
+WORKDIR /opt/pulsar
+#ENV PATH=$PATH:/home/dev/.local/bin
 
 # Environment setup
 ENV PGPLOT_DIR=/usr/lib/pgplot5 
@@ -81,7 +73,7 @@ ENV TEMPO=$PSRHOME/tempo
 ENV PATH=$PATH:$PSRHOME/tempo/bin
 
 RUN git clone git://git.code.sf.net/p/tempo/tempo
-RUN mv tempo $PSRHOME
+#RUN mv tempo $PSRHOME
 
 WORKDIR ${TEMPO}
 RUN ./prepare && \
@@ -105,7 +97,7 @@ RUN git clone https://github.com/scottransom/presto.git
 RUN mv presto $PRESTO
 
 # pull maskdata PRESTO modifications
-WORKDIR /home/dev
+WORKDIR $PSRHOME
 RUN git clone https://github.com/federatedcloud/modulation_index.git && \
     cd modulation_index && \
     cp changes/*.h $PRESTO/include && \
@@ -132,19 +124,15 @@ WORKDIR $PALFA
 RUN git clone https://github.com/federatedcloud/transients_pipeline2.git
 
 # install modulation index
-RUN cd /home/dev/modulation_index/mi_src && \
+RUN cd /opt/pulsar/modulation_index/mi_src && \
     gcc -Wall palfa_calc_mi.c -o palfa_mi -lm && \
     cp palfa_mi $PALFA/bin
 
-# install blimpy
-RUN pip install https://github.com/UCBerkeleySETI/blimpy/archive/1.4.1.tar.gz
+# user setup (possibly remove)
+COPY bashrc /root/.bashrc
+COPY vimrc /root/.vimrc
+COPY profile /root/.profile
 
-# user setup
-COPY bashrc /home/dev/.bashrc
-COPY vimrc /home/dev/.vimrc
-COPY profile /home/dev/.profile
-
-USER root
 RUN git clone https://github.com/scottransom/psrfits_utils.git && \
     cd psrfits_utils && \
     ./prepare && \
@@ -161,8 +149,4 @@ RUN git clone https://github.com/demorest/tempo_utils.git && \
 
 ENV PATH=/opt/pulsar/bin:$PATH
 ENV LD_LIBRARY_PATH=/opt/pulsar/lib:$LD_LIBRARY_PATH
-
-RUN chown -R dev /home/dev
-
-USER dev
 
