@@ -106,7 +106,8 @@ RUN git clone https://github.com/federatedcloud/modulation_index.git && \
 
 WORKDIR $PRESTO/src
 RUN make prep && \
-    make
+    make && \
+    make mpi
 WORKDIR $PRESTO
 RUN pip install --upgrade pip && \
     pip install .
@@ -149,4 +150,6 @@ RUN git clone https://github.com/demorest/tempo_utils.git && \
 
 ENV PATH=/opt/pulsar/bin:$PATH
 ENV LD_LIBRARY_PATH=/opt/pulsar/lib:$LD_LIBRARY_PATH
+
+RUN ldconfig
 

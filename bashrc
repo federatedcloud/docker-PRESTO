@@ -116,7 +116,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-
 export PGPLOT_DIR=/usr/lib/pgplot5 
 export PGPLOT_FONT=/usr/lib/pgplot5/grfont.dat 
 export PGPLOT_INCLUDES=/usr/include 
@@ -141,3 +140,4 @@ export PALFA=$PSRHOME/PALFA
 export PATH=/opt/conda/bin:$PATH
 export PYTHONPATH=$PYTHONPATH:$PALFA/transients_pipeline2/pipeline2.0/lib/python/
 export PYTHONPATH=$PYTHONPATH:$PALFA/transients_pipeline2/pipeline2.0/bin/
+export PYTHONPATH=/opt/pulsar/presto/python/:/opt/pulsar/presto/python/presto/$PYTHONPATH:$PGPLOT_DIR
